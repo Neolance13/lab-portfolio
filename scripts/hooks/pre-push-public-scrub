@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+# pre-push-public-scrub — install as .git/hooks/pre-push when publishing lab-portfolio
+#
+# Enable (from a lab-portfolio clone, or any clone whose origin is lab-portfolio):
+#   cp /path/to/cyberdeck/scripts/hooks/pre-push-public-scrub .git/hooks/pre-push
+#   chmod +x .git/hooks/pre-push
+#
+# Or symlink from private cyberdeck checkout:
+#   ln -sf ../../scripts/hooks/pre-push-public-scrub .git/hooks/pre-push
+#
+# Behavior: if the remote URL looks like public lab-portfolio, run public-scrub-check
+# on the commits being pushed. Non-lab-portfolio remotes are allowed through.
+
+set -euo pipefail
+
+remote_name="${1:-}"
+remote_url="${2:-}"
+
+is_public_target() {
+  case "$remote_url" in
+    *lab-portfolio*) return 0 ;;
+  esac
+  case "$remote_name" in
+    *lab-portfolio*) return 0 ;;
+  esac
+  # Also treat origin of a lab-portfolio working copy as public
+  local origin
+  origin="$(git remote get-url origin 2>/dev/null || true)"
+  case "$origin" in
+    *lab-portfolio*) return 0 ;;
+  esac
+  return 1
+}
+
+if ! is_public_target; then
+  exit 0
+fi
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+CHECK=""
+for candidate in \
+  "$REPO_ROOT/scripts/public-scrub-check.sh" \
+  "$(dirname "$0")/../public-scrub-check.sh" \
+  "$HOME/cyberdeck/scripts/public-scrub-check.sh"
+do
+  if [[ -x "$candidate" ]]; then
+    CHECK="$candidate"
+    break
+  fi
+done
+
+if [[ -z "$CHECK" ]]; then
+  echo "pre-push-public-scrub: public-scrub-check.sh not found; blocking public push." >&2
+  echo "Copy scripts/public-scrub-check.sh into this repo or fix the hook path." >&2
+  exit 1
+fi
+
+# Read refs from stdin: <local_ref> <local_sha> <remote_ref> <remote_sha>
+FAIL=0
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [[ -z "${local_sha:-}" ]] && continue
+  # deletion
+  if [[ "$local_sha" =~ ^0+$ ]]; then
+    continue
+  fi
+  if [[ "$remote_sha" =~ ^0+$ ]]; then
+    range="$local_sha"
+    # new branch: check all files in the tree being pushed
+    if ! "$CHECK" --stdin-files < <(git ls-tree -r --name-only "$local_sha"); then
+      FAIL=1
+    fi
+  else
+    if ! "$CHECK" --range "${remote_sha}..${local_sha}"; then
+      FAIL=1
+    fi
+    # Also full-tree scan of the tip (catches already-committed leaks in older files)
+    if ! "$CHECK" --stdin-files < <(git ls-tree -r --name-only "$local_sha"); then
+      FAIL=1
+    fi
+  fi
+done
+
+if [[ "$FAIL" -ne 0 ]]; then
+  echo "pre-push-public-scrub: blocked push to public lab-portfolio." >&2
+  exit 1
+fi
+exit 0

@@ -1,0 +1,16 @@
+name: public-scrub-gate
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  scrub:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run public scrub check
+        run: |
+          chmod +x scripts/public-scrub-check.sh
+          ./scripts/public-scrub-check.sh

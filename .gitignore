@@ -1,0 +1,36 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Secrets & local env
+.env
+.env.*
+*.pem
+*.key
+credentials*
+
+# Large / controlled binaries (never commit)
+*.iso
+*.ova
+*.ovf
+*.vdi
+*.vmdk
+*.qcow2
+*.run
+*.exe
+*.msi
+*.dmg
+*.AppImage
+*.zip
+*.7z
+*.rar
+*.sav
+*.vhd
+*.vhdx
+
+# Logs with possible host paths (keep curated copies under docs/)
+*.log
+!docs/**/*.md
