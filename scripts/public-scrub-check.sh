@@ -72,13 +72,14 @@ fi
 
 TERMS_ABS="$(cd "$(dirname "$TERMS_SRC")" && pwd)/$(basename "$TERMS_SRC")"
 
-# A term file tracked inside this (public) repo would itself be a leak.
-if git -C "$ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+# In a PUBLIC lab-portfolio tree, a term file tracked inside the repo would itself be a leak.
+# Private cyberdeck may track scripts/scrub/scrub-terms.list.
+if is_lab_portfolio && git -C "$ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   case "$TERMS_ABS" in
     "$ROOT"/*)
       rel="${TERMS_ABS#"$ROOT"/}"
       if git -C "$ROOT" ls-files --error-unmatch -- "$rel" >/dev/null 2>&1; then
-        die_config "private term list is TRACKED by git in this repo; remove it from the index."
+        die_config "private term list is TRACKED by git in this public repo; remove it from the index."
       fi
       if ! git -C "$ROOT" check-ignore -q -- "$rel" 2>/dev/null; then
         echo "public-scrub-check: WARNING — term list inside the repo is not gitignored; add it to .gitignore." >&2

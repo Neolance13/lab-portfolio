@@ -51,12 +51,16 @@ try {
   Fail-Closed "private term list is not readable ($TermsOrigin)."
 }
 
-# A term file tracked inside this (public) repo would itself be a leak.
+# In a PUBLIC lab-portfolio tree, a term file tracked inside the repo would itself be a leak.
 $rootPrefix = $Root.TrimEnd('\', '/') + [IO.Path]::DirectorySeparatorChar
-if ($TermsAbs.StartsWith($rootPrefix, [StringComparison]::OrdinalIgnoreCase)) {
+$nameLeaf = Split-Path $Root -Leaf
+$urlProbe = ''
+try { $urlProbe = git -C $Root remote get-url origin 2>$null } catch {}
+$isPublic = ($nameLeaf -match 'lab-portfolio') -or ($urlProbe -match 'lab-portfolio')
+if ($isPublic -and $TermsAbs.StartsWith($rootPrefix, [StringComparison]::OrdinalIgnoreCase)) {
   $rel = $TermsAbs.Substring($rootPrefix.Length)
   & git -C $Root ls-files --error-unmatch -- $rel *> $null
-  if ($LASTEXITCODE -eq 0) { Fail-Closed 'private term list is TRACKED by git in this repo; remove it from the index.' }
+  if ($LASTEXITCODE -eq 0) { Fail-Closed 'private term list is TRACKED by git in this public repo; remove it from the index.' }
   & git -C $Root check-ignore -q -- $rel *> $null
   if ($LASTEXITCODE -ne 0) { [Console]::Error.WriteLine('public-scrub-check: WARNING — term list inside the repo is not gitignored; add it to .gitignore.') }
 }
