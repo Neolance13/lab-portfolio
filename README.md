@@ -38,6 +38,7 @@ Images are built with an automated VirtualBox pipeline on the lab PC, generalize
 - [HOW-TO-Tailscale-Lab.md](HOW-TO-Tailscale-Lab.md) — install Tailscale, join lab VPN, SSH/SFTP
 - [HOWTO-Rocky-SDR-VM.md](docs/cyberdeck/HOWTO-Rocky-SDR-VM.md) — Rocky + VirtualBox SDR guest basics
 - [NETWORK-SOP.md](NETWORK-SOP.md) — lab networking (scrubbed)
+- [CMD-REFERENCE.md](CMD-REFERENCE.md) — command cipher: every command in these guides, grouped by task, with cautions
 - [LAB-TODO.md](LAB-TODO.md) / [TASK-REGISTRY.md](TASK-REGISTRY.md) — open work
 - [CHANGELOG.md](CHANGELOG.md) / [PATCHNOTES.md](PATCHNOTES.md) / [KNOWN-ISSUES.md](docs/cyberdeck/KNOWN-ISSUES.md)
 

@@ -4,6 +4,7 @@ Sanitized running log. No secrets, license material, controlled product names, o
 
 ## [Unreleased]
 ### Lab (latest)
+- 2026-10-06: public command reference added ([CMD-REFERENCE.md](../../CMD-REFERENCE.md)): every command in the public guides grouped by task, with plain-words meaning and cautions; team bot SOP updated (new teammate for side projects outside this lab; research shared across all teammates)
 - 2026-10-06: lab builds of all three role variants (ground desktop, airborne headless, unmanned headless) built and boot-tested, published under the **Rotre** name as v0.1.0 (lab builds, not releases); test VMs per role on the lab mesh
 - 2026-10-06: public guides added: [Rotre flash](../../HOW-TO-Rotre-Flash.md), [Rotre build from scratch](../../HOW-TO-Rotre-From-Scratch.md), [Rotre troubleshooting](../../TROUBLESHOOT-Rotre.md), [lab remote access](../../HOW-TO-Tailscale-Lab.md)
 - 2026-10-05: first ground-station lab image built and boot-tested (UEFI/BIOS)

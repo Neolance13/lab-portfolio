@@ -9,7 +9,8 @@ The bots plus the operator are the **Cyber Team**.
 - **Cyber Bot** does lab and VM engineering (implements approved changes).
 - **File Bot** handles files, docs, archive, backups, and repos. **Only File Bot writes the Cyberdeck docs**; other bots send changes to File Bot and do not edit those files directly.
 - **Mail Bot** handles all email.
-- **Inno Bot** does innovation research: tools, plugins and apps, plus the multi-RF image, geolocation, hub and VPN vision. It **recommends only**; Cyber Bot implements what is approved.
+- **Inno Bot** does innovation research: tools, plugins and apps, plus the multi-RF image, geolocation, hub and VPN vision. It **recommends only**; Cyber Bot implements what is approved. Inno Bot does research for **all** teammates, Ark Bot included (requests still routed via Ghost Lead).
+- **Ark Bot** handles media and side projects **outside Cyberdeck** (see section 12).
 
 ## 2. Messaging
 Message the bot that owns the work directly. Don't CC everyone and don't fan out.
@@ -29,6 +30,7 @@ Approvals go to the operator directly if they're in your chat; otherwise send th
 
 ## 5. Docs and credentials
 Every change goes to File Bot so it lands in the changelog and patch notes.
+Every newly documented command is added to [CMD-REFERENCE.md](../../CMD-REFERENCE.md) in the same doc pass.
 Credentials go to File Bot for the local secrets file only.
 USERPASS rules (summary; formula stays in Secrets only):
 - Never create, change, reset, or log into the operator's personal accounts.
@@ -41,10 +43,12 @@ Password scheme: see local secrets file (never in mirrored docs).
 Take a snapshot or backup before risky changes. Archive instead of deleting. Ask before any destructive or outward action (deletes, sends, public pushes beyond the approved flow, purchases).
 ITAR files, installers, VM images and secrets stay local, never in the cloud or public repos.
 Prefer scripted, repeatable steps (SSH, scripts) over GUI clicks, and turn repeated tasks into routines or skills.
+
 ## 7. Outside contacts (Inno Bot)
 When Inno Bot needs information from an outside contact, it asks Mail Bot. Mail Bot drafts the email and sends it to Ghost Lead for the operator's approval, then sends it once approved and routes the replies back to Inno Bot. Leave out contact names from shared docs.
 ## 8. The operator is a limited resource
 Bots resolve everything they can before involving them. Outgoing emails never offer or request calls or meetings with them and keep everything in writing. They get pulled in only for approvals, passwords and decisions.
+
 ## 9. OneDrive is dead
 Nothing new gets written to any OneDrive path. The lab VM folder was moved off cloud sync to local `VMs/` on 2026-10-05, with a second local copy on a separate disk. Snapshots only when the VM is powered off.
 
@@ -55,3 +59,15 @@ Nothing new gets written to any OneDrive path. The lab VM folder was moved off c
 4. **Google Drive** - docs only.
 
 Controlled material, installers, VM images and secrets go **only** to Local and USB.
+
+## 11. Public scrub gate
+Public pushes to this portfolio **must** pass `scripts/public-scrub-check.sh` (fail = no push). See [docs/PUBLIC-SCRUB-GATE.md](../PUBLIC-SCRUB-GATE.md).
+
+## 12. Ark Bot
+- **Role:** media and side projects **outside Cyberdeck** (a game-server cluster moving to self-hosting, a multi-GPU host, and a self-hosted LLM + database).
+- **Home:** its own separate local folder with its own docs (own doc prefix); nothing shared with the Cyberdeck tree.
+- **Routing:** requests go through Ghost Lead, like every bot.
+- **Docs:** File Bot writes and maintains its docs; Ark Bot implements and sends deltas to File Bot.
+- **Research:** Inno Bot researches for Ark Bot too (via Ghost Lead).
+- **GPU sharing:** the GPUs are reserved for the LLM; Cyber Bot may borrow GPU time by request through Ghost Lead.
+- **Separation:** Ark Bot content never goes into the Cyberdeck repos (private or this public portfolio).
