@@ -34,3 +34,7 @@ credentials*
 # Logs with possible host paths (keep curated copies under docs/)
 *.log
 !docs/**/*.md
+
+# Private scrub deny-list (never commit; loaded at runtime by public-scrub-check)
+scrub-terms.local
+*.scrub-terms.local
